@@ -62,17 +62,33 @@ export function transition(state, event) {
       };
 
     case "ADD": {
-      if (state.planner.some((course) => course.id === event.course.id)) {
-        return state;
-      }
+  // Do not add a course that is already in the planner.
+  if (state.planner.some((course) => course.id === event.course.id)) {
+    return state;
+  }
 
-      const { id, code, title, credits } = event.course;
+  // Do not add a course if it is full.
+  if (event.course.seatsLeft === 0) {
+    return state;
+  }
 
-      return {
-        ...state,
-        planner: [...state.planner, { id, code, title, credits }],
-      };
-    }
+  // Calculate the credits after adding this course.
+  const currentCredits = state.planner.reduce(
+    (total, course) => total + course.credits,
+    0
+  );
+
+  if (currentCredits + event.course.credits > 24) {
+    return state;
+  }
+
+  const { id, code, title, credits } = event.course;
+
+  return {
+    ...state,
+    planner: [...state.planner, { id, code, title, credits }],
+  };
+}
 
     case "REMOVE": {
       const courseExists = state.planner.some(
