@@ -17,14 +17,27 @@ export const START = [
 // Never change `matrix` (the tests freeze it, so changing it throws).
 // Rows you don't touch must stay the SAME arrays; only the changed row is new.
 export function incrementAt(matrix, row, col) {
-  throw new Error("TODO");
+  return matrix.map((currentRow, rowIndex) =>
+    rowIndex === row
+      ? currentRow.map((value, colIndex) =>
+          colIndex === col ? value + 1 : value
+        )
+      : currentRow
+  );
 }
 
 // Section 09 — numbers worked out from the matrix, never stored.
 //   stats([[1, 0], [3, 4]])  →  { sum: 8, average: 2, max: 4, nonZero: 3 }
 // average = sum ÷ the number of cells. An empty matrix, [], gives 0 for all four.
 export function stats(matrix) {
-  throw new Error("TODO");
+  const numbers = matrix.flat();
+
+  const sum = numbers.reduce((total, value) => total + value, 0);
+  const average = numbers.length === 0 ? 0 : sum / numbers.length;
+  const max = numbers.length === 0 ? 0 : Math.max(...numbers);
+  const nonZero = numbers.filter((value) => value !== 0).length;
+
+  return { sum, average, max, nonZero };
 }
 
 // Section 12 (stretch) — the same shape, every cell 0.

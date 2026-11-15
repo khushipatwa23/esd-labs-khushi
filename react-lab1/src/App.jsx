@@ -13,13 +13,29 @@ import { START, incrementAt, decrementAt, zeros } from "./matrix.js";
   //             Pass it down to Matrix as onIncrement.
   // Section 09: render <Stats matrix={…} /> NEXT TO the matrix, not inside it.
   // Section 11: load /matrix.json once, in a useEffect, and put it in the state.
+
+
+
 export default function App() {
   const [matrix, setMatrix] = useState(START);
+
+  useEffect(() => {
+    fetch("/matrix.json")
+      .then((res) => res.json())
+      .then((data) => setMatrix(data));
+  }, []);
+
+  function increment(row, col) {
+    setMatrix((currentMatrix) => incrementAt(currentMatrix, row, col));
+  }
 
   return (
     <main className="app">
       <Header />
-      <Matrix matrix={matrix} />
+      <div className="board">
+        <Matrix matrix={matrix} onIncrement={increment} />
+        <Stats matrix={matrix} />
+      </div>
     </main>
   );
 }
